@@ -102,3 +102,44 @@ def check_brightness(
         "too_bright": bool(brightness > max_threshold)
 
     }
+
+
+def check_glare(
+    image: np.ndarray,
+    max_glare_ratio: float = 0.05
+) -> dict:
+    """
+    Detect glare using overexposed pixel ratio.
+
+    Parameters
+    ----------
+    image : numpy.ndarray
+        Input BGR image.
+
+    max_glare_ratio : float
+        Maximum acceptable glare ratio.
+
+    Returns
+    -------
+    dict
+    """
+
+    # Convert image to grayscale
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+    # Count pixels brighter than 240
+    glare_pixels = np.sum(gray > 240)
+
+    # Total pixels
+    total_pixels = gray.size
+
+    # Compute glare ratio
+    glare_ratio = glare_pixels / total_pixels
+
+    return {
+
+        "glare_ratio": round(float(glare_ratio), 4),
+
+        "has_glare": bool(glare_ratio > max_glare_ratio)
+
+    }
