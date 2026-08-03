@@ -333,7 +333,17 @@ def calculate_composite_score(scores):
 
     return round(composite * 100,1)
 
-def quality_gate(image):
+def quality_gate(image_or_path):
+
+    # Accept either image path or numpy array
+    if isinstance(image_or_path, str):
+        image = load_image(image_or_path)
+    else:
+        image = image_or_path
+
+    # Validate image
+    if image is None:
+        raise ValueError("Invalid image supplied.")
 
     blur = check_blur(
         image,
@@ -362,83 +372,49 @@ def quality_gate(image):
     )
 
     normalized = normalize_scores(
-
         blur,
-
         brightness,
-
         glare,
-
         roi,
-
         ridge
-
     )
 
     composite = calculate_composite_score(normalized)
 
     hard_failure = (
-
         blur["is_blurry"]
-
         or brightness["too_dark"]
-
         or brightness["too_bright"]
-
         or glare["has_glare"]
-
         or not roi["roi_complete"]
-
         or not ridge["ridges_clear"]
-
     )
 
     passed = composite >= 60 and not hard_failure
 
     if blur["is_blurry"]:
-
         guidance = "Image is blurry. Hold the phone steady."
-
     elif brightness["too_dark"]:
-
         guidance = "Image is too dark. Increase lighting."
-
     elif brightness["too_bright"]:
-
         guidance = "Image is too bright. Reduce lighting."
-
     elif glare["has_glare"]:
-
         guidance = "Glare detected. Tilt your finger."
-
     elif not roi["roi_complete"]:
-
         guidance = "Move your finger closer to the camera."
-
     elif not ridge["ridges_clear"]:
-
         guidance = "Fingerprint ridges are unclear."
-
     else:
-
         guidance = "Good capture - ready for processing."
 
     return {
-
         "passed": passed,
-
         "composite_score": composite,
-
+        "normalized_scores": normalized,
         "blur": blur,
-
         "brightness": brightness,
-
         "glare": glare,
-
         "roi": roi,
-
         "ridge": ridge,
-
         "guidance": guidance
-
     }
