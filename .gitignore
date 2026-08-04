@@ -1,7 +1,20 @@
+# Virtual Environment
 venv/
+
+# Python
 __pycache__/
 *.pyc
+*.pyo
+
+# VS Code
 .vscode/
-.idea/
-test_results.csv
+
+# Streamlit
+.streamlit/
+
+# OS
 .DS_Store
+Thumbs.db
+
+# CSV generated during testing (optional)
+# test_results.csv

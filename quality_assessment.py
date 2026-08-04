@@ -392,18 +392,24 @@ def quality_gate(image_or_path):
 
     passed = composite >= 60 and not hard_failure
 
-    if blur["is_blurry"]:
-        guidance = "Image is blurry. Hold the phone steady."
-    elif brightness["too_dark"]:
+    if brightness["too_dark"]:
         guidance = "Image is too dark. Increase lighting."
+
     elif brightness["too_bright"]:
         guidance = "Image is too bright. Reduce lighting."
+
     elif glare["has_glare"]:
         guidance = "Glare detected. Tilt your finger."
+
+    elif blur["is_blurry"]:
+        guidance = "Image is blurry. Hold the phone steady."
+
     elif not roi["roi_complete"]:
-        guidance = "Move your finger closer to the camera."
+        guidance = "Move your finger closer."
+
     elif not ridge["ridges_clear"]:
         guidance = "Fingerprint ridges are unclear."
+
     else:
         guidance = "Good capture - ready for processing."
 
